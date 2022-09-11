@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import { useLoader, useThree } from '@react-three/fiber';
-import { OrbitControls, SpotLight,ContactShadows, softShadows } from '@react-three/drei';
+import { OrbitControls, SpotLight,ContactShadows, softShadows, Stats } from '@react-three/drei';
 import { TextureLoader } from 'three';
 import React from 'react';
 
@@ -32,11 +32,12 @@ function Earth(props){
             />
             {/* <pointLight castShadow position={[5,5,10]}  intensity={0.6}/> */}
             <mesh receiveShadow castShadow >
-                <sphereGeometry args={[40,5760,2880]}/>
+                <sphereGeometry args={[4,2880,1440]}/>
                 <meshPhongMaterial color={specularMap} />
-                <meshStandardMaterial displacementMap={normalMap} map={dayMap} color={'grey'}  displacementScale={10}/>
+                <meshStandardMaterial displacementMap={normalMap} map={dayMap} color={'grey'}  displacementScale={1}/>
                 <OrbitControls enableZoom={true} enableRotate={true} rotateSpeed={0.4} panSpeed={0.5} zoomSpeed={0.6}/>
             </mesh>
+            <Stats/>
         </>
     );
 }
