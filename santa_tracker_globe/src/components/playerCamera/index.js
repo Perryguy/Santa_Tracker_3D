@@ -1,5 +1,6 @@
-import React, { useRef  } from 'react';
-import { useSphere } from '@react-three/cannon';
+/* eslint-disable react/no-unknown-property */
+import React, { useRef, useEffect  } from 'react';
+import { useBox } from '@react-three/cannon';
 import { useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three'; 
@@ -7,29 +8,38 @@ import { useStore } from '../../store/useStore';
 
 
 function Player({position, ...props}) {
-    const { camera } = useThree();
+    const defaultCamera = useThree((state) => state.camera);
     const pos = useRef([position[0], position[1], position[2]]);
     const [ setCameraPosition] = useStore((state)=> [
         state.setCameraPosition,
     ]);
 
-    const [ref] = useSphere(() => ({
+    const [ref, api] = useBox(() => ({
         type: 'Kinematic',
-        // args: [2, 1, 1], // extents: [x, y, z]
-        onCollide: (e) => {},
         ...props,
     }));
 
+    
+    useEffect(
+        () => api.position.subscribe((v) => (pos.current = v)),
+        [api.position]
+    );
+
+
+
     useFrame((state) => {
-        setCameraPosition(camera.position);
+        setCameraPosition(defaultCamera.position);
+        api.position.set(defaultCamera.position.x, defaultCamera.position.y,30);
     });
 
-    return (
+    return(
         <>
             <group>
                 <mesh ref={ref}>
+                    <boxBufferGeometry attach={'geometry'} args={[20,20,20]}/>
+                    <meshStandardMaterial color={'white'} attach="material" />
                 </mesh>
-                <OrbitControls  enableRotate={false}/>
+                <OrbitControls enableRotate={false}/>
             </group>
         </>
     );

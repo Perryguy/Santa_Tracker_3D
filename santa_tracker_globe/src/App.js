@@ -2,7 +2,7 @@
 import React, { Suspense, useRef } from 'react';
 import  { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/cannon';
-
+import {  Stats } from '@react-three/drei';
 import { useStore } from './store/useStore';
 import Earth from './components/earth';
 import Plane from './components/planes';
@@ -12,9 +12,6 @@ import './App.css';
 function App() {
     const isLocked = useRef(false);
     const planes = useStore((state)=> state.planes);
-    Object.keys(planes).forEach( key => { 
-        console.log(planes);
-    });
 
     return (
         <Canvas
@@ -45,6 +42,7 @@ function App() {
                     }
                     <Player position={[1, 1, 1]} />
                 </Physics>
+                <Stats/>
             </Suspense>
         </Canvas>
     );

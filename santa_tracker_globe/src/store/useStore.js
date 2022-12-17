@@ -1,4 +1,4 @@
-import { Vector3 } from 'three';
+import * as THREE from 'three';
 import create from 'zustand';
 import shallow from 'zustand/shallow';
 
@@ -9,26 +9,27 @@ const setLocalStorage = (key, value) =>
 
 
 export const worldConstants = {
-    MIN_CELL_SIZE: 500,
+    MIN_CELL_SIZE: 100,
     FIXED_GRID_SIZE: 10,
     MIN_CELL_RESOLUTION: 64,
+    MIN_NODE_SIZE: 500
 };
 
 
 const useStoreImpl = create((set) => ({
     worldConstants,
-    cameraPosition: new Vector3(),
+    cameraPosition: new THREE.Vector3(),
     setCameraPosition: (cameraPosition) => set({ cameraPosition }),
-    planes: getLocalStorage('world') || {
-        '0/0' : { position: [0, 0, 0], size:[500,500], resolution: [64, 64]},
-    },
-
-
+    planes: getLocalStorage('plane') || {'0/0[5000]' : { position: [0, 0, 0], size:[500,500], resolution: [64, 64]} }
+    ,
     addPlane: (newChunkKey, x,y,resolution, size) => set( (state) => ({
         planes: {...state.planes, [newChunkKey] : { position: [x, y, 0], size:size, resolution: resolution}}
     })),
-
     removePlane: (x, y, z) => set((state) => state.planes.filter( (plane) => plane.x !== x || plane.y !== y || plane.z !== z)),
+    quadTreeRoot: getLocalStorage('quad'),
+    setQuadTreeRoot: (bounds, children, center, size) => set((state) => ({
+        quadTreeRoot: { bounds: bounds, children: children, center: center, size: size  }
+    })),
     saveWorld: () =>
         set((state) => {
             setLocalStorage('world', state);

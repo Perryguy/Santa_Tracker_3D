@@ -1,23 +1,26 @@
 /* eslint-disable react/no-unknown-property */
 import { useThree, useFrame } from '@react-three/fiber';
-import { TextureLoader } from 'three';
 import { usePlane } from '@react-three/cannon';
 import { useStore } from '../../store/useStore';
 import * as THREE from 'three';
-import React, { useState} from 'react';
+import React from 'react';
+
+import { DictIntersection, DictDifference } from '../../Utilities/dictionaryUtils';
 
 function Planes({position, size, resolution, ...props}){
     const { gl } = useThree();
 
-    const [ cameraPosition, planes, addPlane, worldConstants] = useStore((state)=> [
+    const [ cameraPosition, planes, addPlane, quadTreeRoot, setQuadTreeRoot, worldConstants] = useStore((state)=> [
         state.cameraPosition,
         state.planes,
         state.addPlane,
+        state.quadTreeRoot,
+        state.setQuadTreeRoot,
         state.worldConstants,
     ]);
 
-    function _Key(xc, zc) {
-        return xc + '/' + zc;
+    function Key(c) {
+        return c.position[0] + '/' + c.position[1] + ' [' + c.dimensions[0] + ']';
     }
 
     // Handles whether the camera is in or out of the chunk
@@ -29,34 +32,152 @@ function Planes({position, size, resolution, ...props}){
         return [x, z];
     }
 
-    useFrame((state) => {
-        size = [500,500];
-        resolution = [64,64];
-        const [x , y] = CellIndex(cameraPosition);
-        const newChunkKey = _Key(x, y);
-        if (newChunkKey in planes) {
+    // Quad Tree implementation
+
+    function Insert(CameraPositionXY) {
+        InternalInsert(quadTreeRoot, CameraPositionXY);
+    }
+
+    function InternalInsert(child, CameraPositionXY) {
+        const distToChild = InternalDistanceToChild(child, CameraPositionXY);
+
+        if (distToChild == null){
+            console.log(true);
             return;
         }
-        // console.log(newChunkKey);
-        const offset = new THREE.Vector2(x * worldConstants.MIN_CELL_SIZE, y * worldConstants.MIN_CELL_SIZE,);  
-        // console.log(newChunkKey, offset.x, offset.y, size, resolution );
-        addPlane(newChunkKey, offset.x, offset.y, resolution, size );
+
+        if (distToChild < child.size.x && child.size.x > 500) {
+            child.children = InternalCreateChildren(child);
+            console.log(child.children);
+            
+            for (let c of child.children) {
+                InternalInsert(c, CameraPositionXY);
+            }
+        }
+    }
+
+    function InternalDistanceToChild(child, CameraPositionXY) {
+        return child.center?.distanceTo(CameraPositionXY);
+    }
+
+    function GetChildren() {
+        const children = [];
+        InternalGetChildren(quadTreeRoot, children);
+        return children;
+     
+    }
+
+    function InternalGetChildren(node, target) {
+        if (node.children.length === 0) {
+            target.push(node);
+            return;
+        }
+        for (let c of node.children) {
+            return InternalGetChildren(c, target);
+        } 
+    }
+      
+    function InternalCreateChildren(child){
+    
+        const midpoint = child.bounds.getCenter(new THREE.Vector2());
+    
+        // Bottom left
+        const b1 = new THREE.Box2(child.bounds.min, midpoint);
+    
+        // Bottom right
+        const b2 = new THREE.Box2(
+            new THREE.Vector2(midpoint.x, child.bounds.min.y),
+            new THREE.Vector2(child.bounds.max.x, midpoint.y));
+    
+        // Top left
+        const b3 = new THREE.Box2(
+            new THREE.Vector2(child.bounds.min.x, midpoint.y),
+            new THREE.Vector2(midpoint.x, child.bounds.max.y));
+    
+        // Top right
+        const b4 = new THREE.Box2(midpoint, child.bounds.max);
+    
+        const children = [b1, b2, b3, b4].map(
+            b => {
+                return {
+                    bounds: b,
+                    children: [],
+                    center: b.getCenter(new THREE.Vector2()),
+                    size: b.getSize(new THREE.Vector2())
+                };
+            });
+        return children;
+    }
+
+
+    function UpdateVisibleChunk(){
+        const bounds = new THREE.Box2(new THREE.Vector2(-2500,-2500), new THREE.Vector2(2500, 2500));
+        const CameraPositionXY = new THREE.Vector2(cameraPosition.x, cameraPosition.y);
+        setQuadTreeRoot(bounds, [], bounds.getCenter(new THREE.Vector2()), bounds.getSize(new THREE.Vector2()));
+    
+
+        Insert(CameraPositionXY);
+
+        // eslint-disable-next-line no-constant-condition
+        // if(true){
+        //     return;
+        // }
+
+        const children = GetChildren();
+
+        let newTerrainChunks = {};
+        const center = new THREE.Vector2();
+        const dimensions = new THREE.Vector2();
+
+        for (let c of children) {
+            c.bounds.getCenter(center);
+            c.bounds.getSize(dimensions);
+    
+            const child = {
+                position: [center.x, center.y],
+                bounds: c.bounds,
+                dimensions: [dimensions.x, dimensions.y],
+            };
+    
+            const k = Key(child);
+            // console.log(k);
+
+            newTerrainChunks[k] = child;
+
+        }
+
+
+        const intersection = DictIntersection(planes, newTerrainChunks);
+        const difference = DictDifference(newTerrainChunks, planes);
+        const recycle = Object.values(DictDifference(planes, newTerrainChunks));
+
+        newTerrainChunks = intersection;
+
+        for (let ChunkKey in difference) {
+            const [xp, yp] = difference[ChunkKey].position;
+            const offset = new THREE.Vector2(xp , yp );  
+
+            // addPlane(ChunkKey, offset.x, offset.y, resolution, difference[ChunkKey].dimensions[0] );
+        }   
+        
+    }
+    
+    useFrame((state) => {
+        UpdateVisibleChunk();
+       
     });
 
-    gl.shadowMap.enabled = true;
     const [ ref ] = usePlane(() => ({
         type: 'Static',
         position: position,
         ...props
     }));
-    // softShadows();
-
-
+    
     return(
         <>
             <mesh  ref={ref}>
-                <meshPhongMaterial color={'red'} attach="material" />
-                <planeBufferGeometry attach='geometry' args={[size[0], size[1], resolution[0], resolution[1]]} />
+                <meshPhongMaterial color={'green'} attach="material" />
+                <planeBufferGeometry attach='geometry' args={[worldConstants.MIN_CELL_SIZE, worldConstants.MIN_CELL_SIZE, worldConstants.MIN_CELL_RESOLUTION, worldConstants.MIN_CELL_RESOLUTION]} />
             </mesh>
         </>
     );
