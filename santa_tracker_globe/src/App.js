@@ -8,10 +8,10 @@ import Earth from './components/earth';
 import Plane from './components/planes';
 import Player from './components/playerCamera';
 import './App.css';
+import ChunkManger from './components/chunkManager';
 
 function App() {
     const isLocked = useRef(false);
-    const planes = useStore((state)=> state.planes);
 
     return (
         <Canvas
@@ -35,11 +35,7 @@ function App() {
                 {/* <Earth/> */}
                 <ambientLight intensity={0.6}/>
                 <Physics>
-                    {
-                        Object.keys(planes).map((key, index) => (
-                            <Plane key={index} position={planes[key].position} size={planes[key].size} resolution={planes[key].resolution}/>
-                        ))
-                    }
+                    <ChunkManger/>
                     <Player position={[1, 1, 1]} />
                 </Physics>
                 <Stats/>

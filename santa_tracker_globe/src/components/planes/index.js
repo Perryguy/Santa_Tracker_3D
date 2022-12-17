@@ -8,23 +8,10 @@ import React from 'react';
 import { DictIntersection, DictDifference } from '../../Utilities/dictionaryUtils';
 
 function Planes({position, size, resolution, ...props}){
-    const { gl } = useThree();
 
-    const [ cameraPosition, planes, addPlane, quadTreeRoot, setQuadTreeRoot, worldConstants] = useStore((state)=> [
-        state.cameraPosition,
-        state.planes,
-        state.addPlane,
-        state.quadTreeRoot,
-        state.setQuadTreeRoot,
+    const [worldConstants] = useStore((state)=> [
         state.worldConstants,
     ]);
-
-
-    
-    useFrame((state) => {
-        // UpdateVisibleChunk();
-       
-    });
 
     const [ ref ] = usePlane(() => ({
         type: 'Static',

@@ -36,7 +36,7 @@ function Player({position, ...props}) {
         <>
             <group>
                 <mesh ref={ref}>
-                    <boxBufferGeometry attach={'geometry'} args={[20,20,20]}/>
+                    <boxBufferGeometry attach={'geometry'} args={[10,10,0]}/>
                     <meshStandardMaterial color={'white'} attach="material" />
                 </mesh>
                 <OrbitControls enableRotate={false}/>

@@ -3,6 +3,7 @@ export const DictIntersection =(dictA, dictB) => {
     for (let k in dictB) {
         if (k in dictA) {
             intersection[k] = dictA[k];
+            console.log(true);
         }
     }
     return intersection;
