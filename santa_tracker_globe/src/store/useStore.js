@@ -9,10 +9,10 @@ const setLocalStorage = (key, value) =>
 
 
 export const worldConstants = {
-    MIN_CELL_SIZE: 100,
+    MIN_CELL_SIZE: 50,
     FIXED_GRID_SIZE: 10,
-    MIN_CELL_RESOLUTION: 64,
-    MIN_NODE_SIZE: 50
+    MIN_CELL_RESOLUTION: 32,
+    MIN_NODE_SIZE: 1
 };
 
 
@@ -20,8 +20,7 @@ const useStoreImpl = create((set) => ({
     worldConstants,
     cameraPosition: new THREE.Vector3(),
     setCameraPosition: (cameraPosition) => set({ cameraPosition }),
-    planes: getLocalStorage('plane') || {'0/0' : { position: [0, 0, 0], size:[50,50], resolution: [64, 64]} }
-    ,
+    planes: getLocalStorage('plane'),
     addPlane: (newChunkKey, x,y,resolution, size) => set( (state) => ({
         planes: {...state.planes, [newChunkKey] : { position: [x, y, 0], size:size, resolution: resolution}}
     })),
