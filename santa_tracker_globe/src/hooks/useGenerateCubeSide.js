@@ -6,11 +6,11 @@ export function useGenerateCubeSide(normal, resolution) {
 
     useEffect(() => {
         // ... your generateCubeSide logic
-
-        const geometry = new THREE.BufferGeometry();
+        
+        const newGeometry = new THREE.BufferGeometry();
         const vertices = [];
         const indices = [];
-        const size = 10;
+        const size = 1;
         const halfSize = size / 2;
         const step = size / resolution;
 
@@ -42,14 +42,14 @@ export function useGenerateCubeSide(normal, resolution) {
             }
         }
 
-        geometry.setAttribute(
+        newGeometry.setAttribute(
             'position',
             new THREE.Float32BufferAttribute(vertices, 3),
         );
-        geometry.setIndex(indices);
-        geometry.computeVertexNormals();
+        newGeometry.setIndex(indices);
+        newGeometry.computeVertexNormals();
 
-        setGeometry(geometry);
+        setGeometry(newGeometry);
     }, [normal, resolution]);
 
     return geometry;
