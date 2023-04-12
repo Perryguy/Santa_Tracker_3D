@@ -1,8 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import { useLoader, useThree } from '@react-three/fiber';
-
 import * as THREE from 'three';
-// import { useGenerateCubeSide } from '../../hooks/useGenerateCubeSide';
 import CustomFace from './CustomFace';
 import React, { useRef } from 'react';
 
@@ -13,7 +11,7 @@ import React, { useRef } from 'react';
 
 function Earth(props) {
     const meshRef = useRef();
-    const resolution = 32; // Adjust this value to change the level of detail.
+    const resolution = 200; // Adjust this value to change the level of detail.
     const radius = 6.371; // Desired radius for the sphere.
 
     const normals = [
@@ -25,7 +23,7 @@ function Earth(props) {
         new THREE.Vector3(0, 0, -1),
     ];
 
-    const material = new THREE.MeshStandardMaterial({ color: 0x777777 });
+    const material = new THREE.MeshPhongMaterial({ color: 0x777777, wireframe: false, flatShading: false });
 
     return (
         <group>

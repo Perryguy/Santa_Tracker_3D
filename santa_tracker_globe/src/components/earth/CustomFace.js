@@ -8,10 +8,10 @@ import { useNormalizeVerticesToSphere } from '../../hooks/useNormalizeVerticesTo
 const CustomFace = ({ normal, material, radius, resolution }) => {
     const geometry = useGenerateCubeSide(normal, resolution);
     const sphereGeometry = useNormalizeVerticesToSphere(geometry, radius);
-    
     if (!geometry || !sphereGeometry) {
         return null;
     }
+
     return <mesh geometry={sphereGeometry} material={material} />;
 };
 
