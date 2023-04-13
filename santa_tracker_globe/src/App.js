@@ -2,17 +2,20 @@
 import React, { Suspense, useRef } from 'react';
 import  { Canvas } from '@react-three/fiber';
 import { OrbitControls} from '@react-three/drei';
-import Earth from './components/earth';
+import TargetObject from './components/earth/Earth';
+import PlayerCamera  from './components/playerCamera/PlayerCamera';
 import './App.css';
 
 function App() {
     const isLocked = useRef(false);
+    const targetObjectRef = useRef();
+
     return (
         <Canvas
             id="canvasId" 
             shadows
             gl={{ alpha: false }}
-            camera={{ fov: 90, far: 5000, position: (0,0, 100)  }}
+            camera={{ fov: 90, far: 5000, position: (0,0, 10)  }}
             raycaster={{
                 computeOffsets: (_, { size: { width, height } }) => {
                     if (isLocked.current) {
@@ -39,8 +42,9 @@ function App() {
                     shadow-camera-top={10}
                     shadow-camera-bottom={-10}
                 />
-                <Earth/>
-                <OrbitControls enableZoom={true} enableRotate={true} rotateSpeed={0.4} panSpeed={0.5} zoomSpeed={0.6}/>
+                <PlayerCamera targetObject={targetObjectRef}/>
+                <TargetObject ref={targetObjectRef}/>
+                {/* <OrbitControls enableZoom={true} enableRotate={true} rotateSpeed={0.4} panSpeed={0.5} zoomSpeed={0.6}/> */}
             </Suspense>
         </Canvas>
     );

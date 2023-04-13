@@ -1,10 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import * as THREE from 'three';
 
+/**
+ * Generates a cube face geometry based on the provided normal vector and resolution.
+ * @param {THREE.Vector3} normal - The normal vector of the face.
+ * @param {number} resolution - The resolution of the face (number of subdivisions).
+ * @returns {THREE.BufferGeometry} - The generated cube face geometry.
+ */
 export function useGenerateCubeSide(normal, resolution) {
-    const [geometry, setGeometry] = useState(null);
 
-    useEffect(() => {
+    const geometry = useMemo(() => {
         // ... your generateCubeSide logic
         
         const newGeometry = new THREE.BufferGeometry();
@@ -48,8 +53,7 @@ export function useGenerateCubeSide(normal, resolution) {
         );
         newGeometry.setIndex(indices);
         newGeometry.computeVertexNormals();
-
-        setGeometry(newGeometry);
+        return newGeometry;
     }, [normal, resolution]);
 
     return geometry;

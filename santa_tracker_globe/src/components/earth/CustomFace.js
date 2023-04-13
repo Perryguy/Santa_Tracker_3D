@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 
+//Creates individual faces of a sphere!
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
 import { useGenerateCubeSide } from '../../hooks/useGenerateCubeSide';

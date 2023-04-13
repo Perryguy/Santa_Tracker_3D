@@ -1,8 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import * as THREE from 'three';
 
+/**
+ * Normalizes the vertices of the input geometry to create a sphere geometry.
+ * @param {THREE.BufferGeometry} geometry - The input geometry.
+ * @param {number} radius - The radius of the resulting sphere.
+ * @returns {THREE.BufferGeometry} - The sphere geometry with normalized vertices.
+ */
 export function useNormalizeVerticesToSphere(geometry, radius) {
-    const [normalizedGeometry, setNormalizedGeometry] = useState(null);
+
 
     function vertexToLatLng(vertex) {
         const lat = Math.asin(vertex.y / -vertex.length()) * (180 / Math.PI);
@@ -22,7 +28,7 @@ export function useNormalizeVerticesToSphere(geometry, radius) {
         return new THREE.Vector3(x, y, z);
     }
 
-    useEffect(() => {
+    const normalizedGeometry = useMemo(() => {
         if (!geometry) return;
 
         const newGeometry = geometry.clone();
@@ -53,7 +59,7 @@ export function useNormalizeVerticesToSphere(geometry, radius) {
         );
         newGeometry.computeVertexNormals();
 
-        setNormalizedGeometry(newGeometry);
+        return newGeometry;
     }, [geometry, radius]);
 
     return normalizedGeometry;
