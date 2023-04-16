@@ -61,6 +61,7 @@ const useStoreImpl = create((set) => ({
         }),
     setCubeQuadTree: (cubeQuadTree) => set({ cubeQuadTree }),
     setCameraPosition: (cameraPosition) => set({ cameraPosition }),
+    setDebugCameraPosition: (debugCameraPosition) => set({ debugCameraPosition }),
 }));
 
 const useStore = (sel) => useStoreImpl(sel, shallow);

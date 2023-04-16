@@ -7,7 +7,7 @@ import { useStore } from '../../hooks/store';
 const PlayerCamera = ({ targetObject }) => {
     const { setCameraPosition } = useStore();
     const { camera, size } = useThree();
-    const distance = 1000;
+    const distance = 1900;
 
     useEffect(() => {
         camera.aspect = size.width / size.height;
@@ -57,6 +57,7 @@ const PlayerCamera = ({ targetObject }) => {
                 rotateSpeed={0.5}
                 minDistance={10}
                 maxDistance={100}
+                enableZoom={true}
                 // maxPolarAngle={Math.PI / 2}}
                 // minPolarAngle={0}
             />

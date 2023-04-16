@@ -23,23 +23,60 @@ const TargetObject = forwardRef((props, ref) => {
         new THREE.Vector3(0, 0, -1),
     ];
 
+    const materials = [
+        new THREE.MeshPhongMaterial({
+            color: 'blue',
+            wireframe: false,
+            flatShading: false,
+        }),
+        new THREE.MeshPhongMaterial({
+            color: 'red',
+            wireframe: false,
+            flatShading: false,
+        }),
+        new THREE.MeshPhongMaterial({
+            color: 'white',
+            wireframe: false,
+            flatShading: false,
+        }),
+        new THREE.MeshPhongMaterial({
+            color: 'green',
+            wireframe: false,
+            flatShading: false,
+        }),
+        new THREE.MeshPhongMaterial({
+            color: 'orange',
+            wireframe: false,
+            flatShading: false,
+        }),
+        new THREE.MeshPhongMaterial({
+            color: 'yellow',
+            wireframe: false,
+            flatShading: false,
+        })
+    ];
+
     const material = new THREE.MeshPhongMaterial({
         color: 0x777777,
-        wireframe: false,
+        wireframe: true,
         flatShading: false,
     });
 
     return (
         <group ref={ref}>
-            {normals.map((normal, index) => (
-                <CustomFace
-                    key={index}
-                    normal={normal}
-                    material={material}
-                    radius={radius}
-                    resolution={resolution}
-                />
-            ))}
+            {normals.map(
+                (normal, index) => (
+                    (
+                        <CustomFace
+                            key={index}
+                            normal={normal}
+                            material={materials[index]}
+                            radius={radius}
+                            resolution={resolution}
+                        />
+                    )
+                ),
+            )}
         </group>
     );
 });

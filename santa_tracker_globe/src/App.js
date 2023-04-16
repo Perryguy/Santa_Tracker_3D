@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import React, { Suspense, useRef } from 'react';
 import  { Canvas } from '@react-three/fiber';
-import { OrbitControls} from '@react-three/drei';
+import Orbit from './components/fakePlayer/FakePlayer';
 import TargetObject from './components/earth/Earth';
 import PlayerCamera  from './components/playerCamera/PlayerCamera';
 import './App.css';
@@ -15,7 +15,7 @@ function App() {
             id="canvasId" 
             shadows
             gl={{ alpha: false }}
-            camera={{ fov: 90, far: 5000, position: (0,0, 10)  }}
+            camera={{ fov: 90, far: 5000 }}
             raycaster={{
                 computeOffsets: (_, { size: { width, height } }) => {
                     if (isLocked.current) {
@@ -44,6 +44,7 @@ function App() {
                 />
                 <PlayerCamera targetObject={targetObjectRef}/>
                 <TargetObject ref={targetObjectRef}/>
+                <Orbit/>
                 {/* <OrbitControls enableZoom={true} enableRotate={true} rotateSpeed={0.4} panSpeed={0.5} zoomSpeed={0.6}/> */}
             </Suspense>
         </Canvas>
