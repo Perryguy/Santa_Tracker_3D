@@ -4,6 +4,8 @@ import  { Canvas } from '@react-three/fiber';
 import Orbit from './components/fakePlayer/FakePlayer';
 import TargetObject from './components/earth/Earth';
 import PlayerCamera  from './components/playerCamera/PlayerCamera';
+import { OrbitControls } from '@react-three/drei';
+
 import './App.css';
 
 function App() {
@@ -15,7 +17,7 @@ function App() {
             id="canvasId" 
             shadows
             gl={{ alpha: false }}
-            camera={{ fov: 90, far: 5000 }}
+            camera={{ fov: 90, far: 9000, position: ( 0, 0, 600 ) }}
             raycaster={{
                 computeOffsets: (_, { size: { width, height } }) => {
                     if (isLocked.current) {
@@ -29,7 +31,7 @@ function App() {
                 },
             }}>
             <Suspense fallback={null}>
-                <ambientLight intensity={0.4}/>
+                <ambientLight intensity={.7}/>
                 <directionalLight
                     castShadow
                     position={[2.5, 8, 5]}
@@ -42,10 +44,10 @@ function App() {
                     shadow-camera-top={10}
                     shadow-camera-bottom={-10}
                 />
-                <PlayerCamera targetObject={targetObjectRef}/>
-                <TargetObject ref={targetObjectRef}/>
-                <Orbit/>
-                {/* <OrbitControls enableZoom={true} enableRotate={true} rotateSpeed={0.4} panSpeed={0.5} zoomSpeed={0.6}/> */}
+                {/* <PlayerCamera targetObject={targetObjectRef}/> */}
+                <TargetObject />
+                {/* <Orbit/> */}
+                <OrbitControls enableZoom={true} enableRotate={true} rotateSpeed={0.4} panSpeed={0.5} zoomSpeed={1}/>
             </Suspense>
         </Canvas>
     );

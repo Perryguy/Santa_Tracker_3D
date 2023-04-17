@@ -1,6 +1,7 @@
-import { Vector3 } from 'three';
+import { Vector3, Vector3 as THREE_Vector3 } from 'three';
 import create from 'zustand';
 import shallow from 'zustand/shallow';
+import createQuadtree from '../components/earth/CreateQuadTree';
 import * as THREE from 'three';
 
 const getLocalStorage = (key) => JSON.parse(window.localStorage.getItem(key));
@@ -19,49 +20,79 @@ const controls = {
     rightButton: false,
 };
 
-export const quadTree = {
+export const quadTree = (set, get) => ({
     cubeQuadTree: null,
-    min_node_size: 500, //This is the size of the each face.
-};
+    min_node_size: 500,
+    radius: 700,
+    initializeQuadtree: (params) =>
+        set(() => ({
+            cubeQuadTree: new createQuadtree(params),
+        })),
+    setCubeQuadTree: (cubeQuadTree) => set({ cubeQuadTree }),
+    clearQuadtree: () => get().cubeQuadTree.clear(),
+    insertToQuadtree: (obj) => get().cubeQuadTree.insert(obj),
+    retrieveFromQuadtree: (objBounds) => get().cubeQuadTree.retrieve(objBounds),
+});
 
+export const World = (set, get) => ({
+    groups: [...new Array(6)].map((_) => new THREE.Group()),
+    chunks: {},
+    addToChunks: (newChunks) => {
+        const chunks = get().chunks;
+        set({ chunks: { ...chunks, ...newChunks } });
+    },
+    addToGroup: (groupIndex, object) => {
+        const groups = get().groups;
+        groups[groupIndex].add(object);
+        set({ groups });
+    },
+    updateGroupMatrix: (groupIndex, matrix) => {
+        const groups = get().groups;
+        groups[groupIndex].matrix.copy(matrix);
+        groups[groupIndex].updateMatrixWorld(true);
+        set({ groups });
+    },
+    setGroupMatrixAutoUpdate: (groupIndex, value) => {
+        const groups = get().groups;
+        groups[groupIndex].matrixAutoUpdate = value;
+        set({ groups });
+    },
+});
 
-
-export const playerMoveInfo = {
+export const player = (set) => ({
     speed: 0,
     velocity: new Vector3(0, 0, 0),
     prevVelocity: new Vector3(0, 0, 0),
     playerLocation: new Vector3(0, 0, 0),
     cameraPosition: new THREE.Vector3(),
-    // The debug camera is not a true camera but will be used to test any LOD system implementated 
-    debugCameraPosition: new THREE.Vector3()
-
-};
+    debugCameraPosition: new THREE.Vector3(),
+    setCameraPosition: (cameraPosition) => set({ cameraPosition }),
+    setDebugCameraPosition: (debugCameraPosition) =>
+        set({ debugCameraPosition }),
+});
 
 export const playerConfig = {
     GROUND_ACCELERATION: 50,
     AIR_ACCELERATION: 20,
-    JUMP_FORCE: Math.sqrt(2 * -2 * -30), // sqrt(how high you want to jump * constant * gravity)
+    JUMP_FORCE: Math.sqrt(2 * -2 * -30),
     MAX_SPRINT_SPEED: 8,
     MAX_WALK_SPEED: 6,
     MAX_AIR_SPEED: 8,
     FRICTION: 6,
 };
 
-const useStoreImpl = create((set) => ({
+const useStoreImpl = create((set, get) => ({
     controls,
-    playerMoveInfo,
+    ...player(set),
+    ...World(set, get),
     playerConfig,
-    quadTree,
-    //   Textures!
+    ...quadTree(set, get),
     texture: 'grass',
     setTexture: (texture) => set((state) => ({ texture })),
     saveWorld: () =>
         set((state) => {
             setLocalStorage('world', state.cubes);
         }),
-    setCubeQuadTree: (cubeQuadTree) => set({ cubeQuadTree }),
-    setCameraPosition: (cameraPosition) => set({ cameraPosition }),
-    setDebugCameraPosition: (debugCameraPosition) => set({ debugCameraPosition }),
 }));
 
 const useStore = (sel) => useStoreImpl(sel, shallow);
