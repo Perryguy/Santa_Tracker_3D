@@ -25,10 +25,6 @@ export const terrain_chunk = (function () {
             this._plane.castShadow = false;
             this._plane.receiveShadow = true;
             this._params.group.add(this._plane);
-            const rebuildGenerator = this._Rebuild();
-            for (let step of rebuildGenerator) {
-                // You can add any additional processing here if needed
-            }
         }
 
 

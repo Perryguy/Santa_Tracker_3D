@@ -22,19 +22,16 @@ function Orbit() {
 
     useFrame((state, delta) => {
         const elapsedTime = state.clock.getElapsedTime();
-        const angle = elapsedTime * 1;
-        const x = orbitCenter.x + orbitRadius * Math.cos(angle);
-        const y = orbitCenter.y + orbitRadius * Math.sin(angle);
-        orbitRef.current.position.set(x, y, orbitCenter.z);
+        const x = Math.cos(elapsedTime * 0.2) * orbitRadius;
+        const y = Math.sin(elapsedTime *0.2) * orbitRadius;
+        orbitRef.current.position.set(x, y, 0);
         // orbitRef.current.rotation.y += 0.005;
 
         setDebugCameraPosition({
             x: x,
             y: y,
-            z: orbitCenter.z,
+            z: 0,
         });
-
-
     });
 
     return (

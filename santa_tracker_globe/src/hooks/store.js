@@ -3,6 +3,7 @@ import create from 'zustand';
 import shallow from 'zustand/shallow';
 import createQuadtree from '../components/earth/CreateQuadTree';
 import * as THREE from 'three';
+import { terrain_chunk_Rebuilder } from '../components/earth/TerrainChunkRebuilder';
 
 const getLocalStorage = (key) => JSON.parse(window.localStorage.getItem(key));
 const setLocalStorage = (key, value) =>
@@ -35,6 +36,7 @@ export const quadTree = (set, get) => ({
 });
 
 export const World = (set, get) => ({
+    builder: new terrain_chunk_Rebuilder.TerrainChunkRebuilder(),
     groups: [...new Array(6)].map((_) => new THREE.Group()),
     chunks: {},
     addToChunks: (newChunks) => {

@@ -46,7 +46,7 @@ function App() {
                 />
                 {/* <PlayerCamera targetObject={targetObjectRef}/> */}
                 <TargetObject />
-                {/* <Orbit/> */}
+                <Orbit/>
                 <OrbitControls enableZoom={true} enableRotate={true} rotateSpeed={0.4} panSpeed={0.5} zoomSpeed={1}/>
             </Suspense>
         </Canvas>
