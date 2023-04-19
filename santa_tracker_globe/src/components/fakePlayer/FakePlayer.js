@@ -8,7 +8,7 @@ import { useFrame } from '@react-three/fiber';
 function Sphere(props) {
     return (
         <mesh position={props.position}>
-            <sphereBufferGeometry args={[30, 32, 32]} />
+            <sphereBufferGeometry args={[10, 32, 32]} />
             <meshStandardMaterial color={props.color} />
         </mesh>
     );
@@ -22,8 +22,8 @@ function Orbit() {
 
     useFrame((state, delta) => {
         const elapsedTime = state.clock.getElapsedTime();
-        const x = Math.cos(elapsedTime * 0.2) * orbitRadius;
-        const y = Math.sin(elapsedTime *0.2) * orbitRadius;
+        const x = Math.cos(elapsedTime * 0.09) * orbitRadius;
+        const y = Math.sin(elapsedTime *0.09) * orbitRadius;
         orbitRef.current.position.set(x, y, 0);
         // orbitRef.current.rotation.y += 0.005;
 

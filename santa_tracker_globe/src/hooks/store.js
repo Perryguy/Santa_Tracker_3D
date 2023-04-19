@@ -21,28 +21,12 @@ const controls = {
     rightButton: false,
 };
 
-export const quadTree = (set, get) => ({
-    cubeQuadTree: null,
-    min_node_size: 500,
-    radius: 700,
-    initializeQuadtree: (params) =>
-        set(() => ({
-            cubeQuadTree: new createQuadtree(params),
-        })),
-    setCubeQuadTree: (cubeQuadTree) => set({ cubeQuadTree }),
-    clearQuadtree: () => get().cubeQuadTree.clear(),
-    insertToQuadtree: (obj) => get().cubeQuadTree.insert(obj),
-    retrieveFromQuadtree: (objBounds) => get().cubeQuadTree.retrieve(objBounds),
-});
 
 export const World = (set, get) => ({
     builder: new terrain_chunk_Rebuilder.TerrainChunkRebuilder(),
     groups: [...new Array(6)].map((_) => new THREE.Group()),
     chunks: {},
-    addToChunks: (newChunks) => {
-        const chunks = get().chunks;
-        set({ chunks: { ...chunks, ...newChunks } });
-    },
+    replaceChunks: (newChunks) => set({ chunks: newChunks }),
     addToGroup: (groupIndex, object) => {
         const groups = get().groups;
         groups[groupIndex].add(object);
@@ -88,7 +72,6 @@ const useStoreImpl = create((set, get) => ({
     ...player(set),
     ...World(set, get),
     playerConfig,
-    ...quadTree(set, get),
     texture: 'grass',
     setTexture: (texture) => set((state) => ({ texture })),
     saveWorld: () =>
