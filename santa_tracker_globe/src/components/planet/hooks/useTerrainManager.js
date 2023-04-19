@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { useState, useEffect } from 'react';
 import { quadtree } from '../lod/QuadTree.js';
-import { utils } from '../utils.js';
+import { utils } from '../utils/DictionaryUtils.js';
 import useTerrainChunkCreation from './useTerrainChunkCreation.js';
 
 const MIN_CELL_SIZE = 500;
