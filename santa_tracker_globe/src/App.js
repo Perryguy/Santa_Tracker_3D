@@ -2,7 +2,7 @@
 import React, { Suspense, useRef } from 'react';
 import  { Canvas } from '@react-three/fiber';
 import Orbit from './components/fakePlayer/FakePlayer';
-import TargetObject from './components/earth/Earth';
+import TargetObject from './components/planet/Planet';
 import PlayerCamera  from './components/playerCamera/PlayerCamera';
 import { OrbitControls } from '@react-three/drei';
 

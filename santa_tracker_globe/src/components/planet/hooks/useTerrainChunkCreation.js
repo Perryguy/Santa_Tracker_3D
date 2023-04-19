@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 const useTerrainChunkCreation = (TerrainRebuilder, radius) => {
-    const createTerrainChunk = (group, offset, width, resolution) => {
+    return (group, offset, width, resolution) => {
         const params = {
             group,
             material: new THREE.MeshPhongMaterial({
@@ -16,8 +16,6 @@ const useTerrainChunkCreation = (TerrainRebuilder, radius) => {
 
         return TerrainRebuilder.AllocateChunk(params);
     };
-
-    return createTerrainChunk;
 };
 
 export default useTerrainChunkCreation;

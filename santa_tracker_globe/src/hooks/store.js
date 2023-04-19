@@ -1,9 +1,8 @@
 import { Vector3, Vector3 as THREE_Vector3 } from 'three';
 import create from 'zustand';
 import shallow from 'zustand/shallow';
-import createQuadtree from '../components/earth/CreateQuadTree';
 import * as THREE from 'three';
-import { terrain_chunk_Rebuilder } from '../components/earth/TerrainChunkRebuilder';
+import { terrain_chunk_Rebuilder } from '../components/planet/terrain/TerrainChunkRebuilder';
 
 const getLocalStorage = (key) => JSON.parse(window.localStorage.getItem(key));
 const setLocalStorage = (key, value) =>

@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 import { useState, useEffect } from 'react';
-import { quadtree } from '../terrain/Test.js';
-import { utils } from '../terrain/utils';
-import useTerrainChunkCreation from './useTerrainChunkCreation';
+import { quadtree } from '../lod/QuadTree.js';
+import { utils } from '../utils.js';
+import useTerrainChunkCreation from './useTerrainChunkCreation.js';
 
 const MIN_CELL_SIZE = 500;
-const MIN_CELL_RESOLUTION = 10; // Adjust this value to change the level of detail.
-const radius = 637.1; // Desired radius for the sphere.
+const MIN_CELL_RESOLUTION = 128; // Adjust this value to change the level of detail.
+const radius = 6371; // Desired radius for the sphere.
 
-const useQuadTree = (
+const useTerrainManager = (
     debugCameraPosition,
     TerrainRebuilder,
     groups,
@@ -85,4 +85,4 @@ const useQuadTree = (
     return updateVisibleChunksQuadtree;
 };
 
-export default useQuadTree;
+export default useTerrainManager;

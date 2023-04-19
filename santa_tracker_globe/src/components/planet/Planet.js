@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import React, { useRef, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { getState, useStore } from '../../hooks/store';
-import useQuadTree from './hooks/useQuadTree';
+import useTerrainManager from './hooks/useTerrainManager';
 
 const TargetObject = () => {
     const { scene } = useThree();
@@ -33,7 +33,7 @@ const TargetObject = () => {
         return () => groups.forEach((group) => scene.remove(group));
     }, [scene, groups]);
 
-    const updateVisibleChunksQuadtree = useQuadTree(
+    const updateVisibleChunksQuadtree = useTerrainManager(
         debugCameraPosition,
         TerrainRebuilder,
         groups,
