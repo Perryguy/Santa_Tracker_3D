@@ -27,6 +27,9 @@ export const terrain_chunk = (function () {
             this._params.group.add(this._plane);
         }
 
+        _GenerateHeight(u, v, width, offset) {
+            return this._params.hieghtGenerator[0].Get(u, v, width, offset)[0];
+        }
 
         *_Rebuild() {
             const _D = new THREE.Vector3();
@@ -70,16 +73,27 @@ export const terrain_chunk = (function () {
                     _P.multiplyScalar(radius);
                     _P.z -= radius;
 
-                    // Compute a world space position to sample noise
+                    // // Compute a world space position to sample noise
                     _W.copy(_P);
                     _W.applyMatrix4(localToWorld);
 
-        
+                    // Compute normalized coordinates (0-1 range) considering the chunk's offset
+                    const u = (_W.x + width * 0.5) / width;
+                    const v = (_W.y + width * 0.5) / width;
+
+                    const height = this._GenerateHeight(u, v, width, offset);
 
                     // Purturb height along z-vector
                     _H.copy(_D);
-                    _P.add(_H);
 
+                    // for (let t = 0; x < 4; t++){
+                    //     console.log(height);
+                    // }
+                    if (height) {
+                        _H.multiplyScalar(height * 50);
+                    }
+
+                    _P.add(_H);
                     positions.push(_P.x, _P.y, _P.z);
                     normals.push(_D.x, _D.y, _D.z);
                     tangents.push(1, 0, 0, 1);

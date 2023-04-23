@@ -18,7 +18,7 @@ function Orbit() {
     const { setDebugCameraPosition, debugCameraPosition } = useStore();
     const orbitRef = useRef();
     const orbitCenter = new THREE.Vector3(0, 0, 0);
-    const orbitRadius = 6900;
+    const orbitRadius = 6400;
 
     useFrame((state, delta) => {
         const elapsedTime = state.clock.getElapsedTime();

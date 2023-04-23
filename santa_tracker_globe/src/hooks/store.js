@@ -3,6 +3,8 @@ import create from 'zustand';
 import shallow from 'zustand/shallow';
 import * as THREE from 'three';
 import { terrain_chunk_Rebuilder } from '../components/planet/terrain/TerrainChunkRebuilder';
+import { height_map_generator } from '../components/planet/terrain/HeightMapGenerator';
+
 
 const getLocalStorage = (key) => JSON.parse(window.localStorage.getItem(key));
 const setLocalStorage = (key, value) =>
@@ -22,9 +24,12 @@ const controls = {
 
 
 export const World = (set, get) => ({
+    heightGenerator: null,
+    setHeightGenerator: (heightGenerator) => set({ heightGenerator: heightGenerator }),
     builder: new terrain_chunk_Rebuilder.TerrainChunkRebuilder(),
     groups: [...new Array(6)].map((_) => new THREE.Group()),
     chunks: {},
+
     replaceChunks: (newChunks) => set({ chunks: newChunks }),
     addToGroup: (groupIndex, object) => {
         const groups = get().groups;
