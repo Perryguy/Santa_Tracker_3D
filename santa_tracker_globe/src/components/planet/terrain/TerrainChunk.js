@@ -27,8 +27,8 @@ export const terrain_chunk = (function () {
             this._params.group.add(this._plane);
         }
 
-        _GenerateHeight(u, v, width, offset) {
-            return this._params.hieghtGenerator[0].Get(u, v, width, offset)[0];
+        _GenerateHeight(u, v) {
+            return this._params.hieghtGenerator[0].Get(u, v)[0];
         }
 
         *_Rebuild() {
@@ -77,27 +77,23 @@ export const terrain_chunk = (function () {
                     _W.copy(_P);
                     _W.applyMatrix4(localToWorld);
 
-                    // Compute normalized coordinates (0-1 range) considering the chunk's offset
-                    const u = (_W.x + width * 0.5) / width;
-                    const v = (_W.y + width * 0.5) / width;
+                    
 
-                    const height = this._GenerateHeight(u, v, width, offset);
+                    const height = this._GenerateHeight(_W.x, -_W.y);
 
                     // Purturb height along z-vector
                     _H.copy(_D);
-
-                    // for (let t = 0; x < 4; t++){
-                    //     console.log(height);
-                    // }
-                    if (height) {
-                        _H.multiplyScalar(height * 50);
-                    }
-
+                    _H.multiplyScalar(height * 50);
                     _P.add(_H);
+
                     positions.push(_P.x, _P.y, _P.z);
                     normals.push(_D.x, _D.y, _D.z);
                     tangents.push(1, 0, 0, 1);
+
                     uvs.push(_P.x / 10, _P.y / 10);
+                 
+
+                    // uvs.push((_P.x / 10) / this.width, (_P.y / 10) / this.width);
                 }
             }
             yield;

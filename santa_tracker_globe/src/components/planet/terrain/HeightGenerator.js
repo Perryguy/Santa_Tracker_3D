@@ -7,8 +7,8 @@ export const height_Generator = (function () {
         }
         
     
-        Get(x, y, width, offset) {
-            return [this._generator.Get(x, y, width, offset), 1];
+        Get(x, y) {
+            return [this._generator.Get(x, y), 1];
         }
     }
     return {
